@@ -2,6 +2,7 @@ import pandas as pd
 from joblib import load
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_cors import cross_origin
 
 # Load model
 model = load("decision_tree_model.joblib")
@@ -12,8 +13,13 @@ X = pd.read_csv("Thyroid_Dataset_Resampled.csv")
 api = Flask(__name__)
 CORS(api)
 
-@api.route('/predict', methods=['POST'])
+@api.route('/predict', methods=['POST', 'OPTIONS'])
+@cross_origin()  # Allow all origins; customize if needed
 def predict_thyroid_risk():
+    if request.method == 'OPTIONS':
+        # Properly respond to preflight requests
+        return '', 200
+
     data = request.json['inputs']
     input_df = pd.DataFrame(data)
 
@@ -22,15 +28,13 @@ def predict_thyroid_risk():
 
     # Map output to percentage for each risk level
     risk_levels = {
-        "No Risk": probabilities[0] * 100,        # Assuming class 0 is No Risk
-        "Moderate Risk": probabilities[1] * 100,  # Assuming class 1 is Moderate Risk
-        "High Risk": probabilities[2] * 100       # Assuming class 2 is High Risk
+        "No Risk": probabilities[0] * 100,
+        "Moderate Risk": probabilities[1] * 100,
+        "High Risk": probabilities[2] * 100
     }
 
-    # Get predicted class (the one with the highest probability)
     predicted_class = max(risk_levels, key=risk_levels.get)
 
-    # Add personalized suggestions
     suggestions = {
         "No Risk": "You currently show no signs of thyroid risk. Maintain a balanced lifestyle and regular health check-ups.",
         "Moderate Risk": "There are moderate indicators of thyroid issues. Consider scheduling a thyroid function test.",
