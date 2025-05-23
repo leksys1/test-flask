@@ -12,7 +12,7 @@ X = pd.read_csv("Thyroid_Dataset_Resampled.csv")
 api = Flask(__name__)
 CORS(api)
 
-@api.route('/api/doa_prediction', methods=['POST'])
+@api.route('/predict', methods=['POST'])
 def predict_thyroid_risk():
     data = request.json['inputs']
     input_df = pd.DataFrame(data)
