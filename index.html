@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thyroid Disease Prediction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    form {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px 30px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #333;
+    }
+
+    input,
+    select {
+      font-size: 15px;
+      padding: 12px 14px;
+      border: 1.5px solid #ccc;
+      border-radius: 6px;
+      background-color: #fafafa;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 4px rgba(52, 152, 219, 0.4);
+      background-color: #fff;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      background-color: #3498db;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 8px;
+      display: none;
+      background-color: #eafaf1;
+      border: 1px solid #b2dfdb;
+      color: #2e7d32;
+      font-size: 18px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="resultContainer" class="result">
+    <h2>Prediction Result:</h2>
+    <p id="thyroidResult">Loading...</p>
+  </div>
+
+  <h1>Thyroid Disease Prediction</h1>
+
+  <form id="predictionForm">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" id="age" required min="1" max="120">
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Gender:</label>
+        <select id="gender" required>
+          <option value="">Select Gender</option>
+          <option value="0">Male</option>
+          <option value="1">Female</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="pregnancy">Pregnancy</label>
+        <select id="pregnancy" required>
+          <option value="0">No</option>
+          <option value="1">Past</option>
+          <option value="2">Current</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="family_history">Family History of Thyroid</label>
+        <select id="family_history" required>
+          <option value="0">No</option>
+          <option value="1">Yes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="goiter">Goiter</label>
+        <select id="goiter" required>
+          <option value="0">No</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fatigue">Fatigue</label>
+        <select id="fatigue" required>
+          <option value="0">No</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="weight_change">Weight Change:</label>
+        <select id="weight_change" required>
+          <option value="0">None</option>
+          <option value="1">Weight Gain</option>
+          <option value="2">Weight Loss</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="hair_loss">Hair Loss:</label>
+        <select id="hair_loss" required>
+          <option value="0">None</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="heart_rate_changes">Heart Rate Changes:</label>
+        <select id="heart_rate_changes" required>
+          <option value="0">None</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sensitivity">Sensitivity to Cold or Heat:</label>
+        <select id="sensitivity" required>
+          <option value="0">None</option>
+          <option value="1">Cold Sensitivity</option>
+          <option value="2">Heat Sensitivity</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sweating">Increased Sweating:</label>
+        <select id="sweating" required>
+          <option value="0">No</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="muscle_weakness">Muscle Weakness:</label>
+        <select id="muscle_weakness" required>
+          <option value="0">No</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="bowel_movement">Constipation or More Bowel Movements:</label>
+        <select id="bowel_movement" required>
+          <option value="0">None</option>
+          <option value="1">Constipation</option>
+          <option value="2">Frequent Movements</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="depression">Depression or Anxiety:</label>
+        <select id="depression" required>
+          <option value="0">None</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="concentration">Difficulty Concentrating or Memory Problems:</label>
+        <select id="concentration" required>
+          <option value="0">No</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dry_skin">Dry or Itchy Skin:</label>
+        <select id="dry_skin" required>
+          <option value="0">No</option>
+          <option value="1">Mild</option>
+          <option value="2">Severe</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit">Predict Thyroid Condition</button>
+  </form>
+
+
+
+
+  <script>
+    document.getElementById('predictionForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = {
+        Age: parseInt(document.getElementById('age').value),
+        Gender: parseInt(document.getElementById('gender').value),
+        Pregnancy: parseInt(document.getElementById('pregnancy').value),
+        Family_History_of_Thyroid: parseInt(document.getElementById('family_history').value),
+        Goiter: parseInt(document.getElementById('goiter').value),
+        Fatigue: parseInt(document.getElementById('fatigue').value),
+        Weight_Change: parseInt(document.getElementById('weight_change').value),
+        Hair_Loss: parseInt(document.getElementById('hair_loss').value),
+        Heart_Rate_Changes: parseInt(document.getElementById('heart_rate_changes').value),
+        Sensitivity_to_Cold_or_Heat: parseInt(document.getElementById('sensitivity').value),
+        Increased_Sweating: parseInt(document.getElementById('sweating').value),
+        Muscle_Weakness: parseInt(document.getElementById('muscle_weakness').value),
+        Constipation_or_More_Bowel_Movements: parseInt(document.getElementById('bowel_movement').value),
+        Depression_or_Anxiety: parseInt(document.getElementById('depression').value),
+        Difficulty_Concentrating_or_Memory_Problems: parseInt(document.getElementById('concentration').value),
+        Dry_or_Itchy_Skin: parseInt(document.getElementById('dry_skin').value)
+      };
+
+      const requestData = { inputs: [formData] };
+
+      fetch('http://localhost:8000/api/doa_prediction', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const resultContainer = document.getElementById('resultContainer');
+          const resultText = document.getElementById('thyroidResult');
+
+          if (!data || typeof data !== 'object') {
+            resultText.textContent = 'Unexpected response.';
+            resultContainer.style.display = 'block';
+            return;
+          }
+
+          const prediction = data.prediction;
+          const suggestion = data.suggestion;
+          const riskPercentages = data.risk_percentages;
+
+          // Build formatted risk string
+          const riskDetails = Object.entries(riskPercentages)
+            .map(([key, value]) => `${key}: ${value.toFixed(2)}%`)
+            .join('\n');
+
+          // Build full result message
+          const fullResult = `Prediction: ${prediction}:\n\n${suggestion}`;
+
+          resultText.textContent = fullResult;
+          resultContainer.style.display = 'block';
+        })
+
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error making prediction: ' + error.message);
+        });
+    });
+  </script>
+
+</body>
+
+</html>
